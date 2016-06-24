@@ -1,9 +1,11 @@
-package com.rayweather.app.model;
+package com.rayweather.app.db;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rayweather.app.db.RayWeatherOpenHelper;
+import com.rayweather.app.model.City;
+import com.rayweather.app.model.County;
+import com.rayweather.app.model.Province;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -23,7 +25,7 @@ public class RayWeatherDB {
 	 */
 	public static final int VERSION = 1;
 	private static RayWeatherDB rayWeatherDB;
-	private SQLiteDatabase db;
+	private  SQLiteDatabase db;
 
 	/**
 	 * 将构造方法私有化
@@ -35,7 +37,7 @@ public class RayWeatherDB {
 	}
 
 	/**
-	 * 获取RayWeather实例
+	 * 获取RayWeatherDB实例
 	 */
 
 	public synchronized static RayWeatherDB getInstance(Context context) {
@@ -61,7 +63,7 @@ public class RayWeatherDB {
 	/**
 	 * 从数据库读取全国所有省份信息
 	 */
-	private List<Province> loadProvince() {
+	public List<Province> loadProvinces() {
 		List<Province> list = new ArrayList<Province>();
 		Cursor cursor = db
 				.query("Province", null, null, null, null, null, null);
@@ -98,7 +100,7 @@ public class RayWeatherDB {
 	/**
 	 * 从数据读取某省下所有城市信息
 	 */
-	private List<City> loadCities(int provinceId) {
+	public List<City> loadCities(int provinceId) {
 		List<City> list = new ArrayList<City>();
 		Cursor cursor = db.query("City", null, "province_id = ?",
 				new String[] { String.valueOf(provinceId) }, null, null, null);
@@ -136,7 +138,7 @@ public class RayWeatherDB {
 	/**
 	 * 从数据库读取某城市下所有的县信息
 	 */
-	private List<County> loadCounties(int cityID) {
+	public List<County> loadCounties(int cityID) {
 		List<County> list = new ArrayList<County>();
 		Cursor cursor = db.query("County", null, "city_id = ?",
 				new String[] { String.valueOf(cityID) }, null, null, null);
