@@ -21,7 +21,7 @@ public class HttpUtil {
 				try {
 					URL url = new URL(address);
 					connection = (HttpURLConnection) url.openConnection();
-					connection.setRequestMethod("Get");
+					connection.setRequestMethod("GET");
 					connection.setConnectTimeout(8000);
 					connection.setReadTimeout(8000);
 					InputStream in = connection.getInputStream();
@@ -50,11 +50,5 @@ public class HttpUtil {
 			}
 		}).start();
 	}
-
-	public interface HttpCallbackListener {
-		void onFinish(String response);
-
-		void onError(Exception e);
-	}
-
 }
+

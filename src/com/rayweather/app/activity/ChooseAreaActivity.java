@@ -8,14 +8,18 @@ import com.rayweather.app.db.RayWeatherDB;
 import com.rayweather.app.model.City;
 import com.rayweather.app.model.County;
 import com.rayweather.app.model.Province;
+import com.rayweather.app.util.HttpCallbackListener;
 import com.rayweather.app.util.HttpUtil;
-import com.rayweather.app.util.HttpUtil.HttpCallbackListener;
+
 import com.rayweather.app.util.Utility;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.DownloadManager.Query;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.Window;
@@ -73,6 +77,14 @@ public class ChooseAreaActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		if(prefs.getBoolean("city_selecte", false)){
+			Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+			startActivity(intent);
+			finish();
+			return;
+		}
+		
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.choose_area);
 
@@ -93,6 +105,11 @@ public class ChooseAreaActivity extends Activity {
 				} else if (currentLevel == LEVEL_CITY) {
 					selectedCity = cityList.get(index);
 					queryCounties();
+				}else if(currentLevel == LEVEL_COUNTY){
+					String countyCode = countyList.get(index).getCountyCode();	
+					Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+					startActivity(intent);
+					finish();
 				}
 
 			}
@@ -113,6 +130,7 @@ public class ChooseAreaActivity extends Activity {
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
 			titleText.setText("ÖÐ¹ú");
+			currentLevel = LEVEL_PROVINCE;
 		} else {
 			queryFromServer(null, "province");
 		}
@@ -131,6 +149,7 @@ public class ChooseAreaActivity extends Activity {
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
 			titleText.setText(selectedProvince.getProvinceName());
+			currentLevel = LEVEL_CITY;
 		} else {
 			queryFromServer(selectedProvince.getProvinceCode(), "city");
 		}
@@ -149,6 +168,7 @@ public class ChooseAreaActivity extends Activity {
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
 			titleText.setText(selectedCity.getCityName());
+			currentLevel = LEVEL_COUNTY;
 		} else {
 			queryFromServer(selectedCity.getCityCode(), "county");
 		}
@@ -160,7 +180,7 @@ public class ChooseAreaActivity extends Activity {
 	private void queryFromServer(final String code, final String type) {
 		String address;
 		if (!TextUtils.isEmpty(code)) {
-			address = "http://www.weather.com.cn/data/list3/city.xml" + code
+			address = "http://www.weather.com.cn/data/list3/city" + code
 					+ ".xml";
 		} else {
 			address = "http://www.weather.com.cn/data/list3/city.xml";
@@ -168,7 +188,6 @@ public class ChooseAreaActivity extends Activity {
 		showProgressDialog();
 		HttpUtil.sendHttpRequest(address, new HttpCallbackListener() {
 
-			@Override
 			public void onFinish(String response) {
 				boolean result = false;
 				if ("province".equals(type)) {
@@ -247,7 +266,7 @@ public class ChooseAreaActivity extends Activity {
 			queryCities();
 		}else if(currentLevel == LEVEL_CITY){
 			queryProvinces();
-		}else if(currentLevel == LEVEL_PROVINCE){
+		}else {
 			finish();
 		}
 	}

@@ -11,8 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
-import android.webkit.WebChromeClient.CustomViewCallback;
 
 public class RayWeatherDB {
 	/**
@@ -115,9 +113,6 @@ public class RayWeatherDB {
 				city.setProvinceId(provinceId);
 				list.add(city);
 			} while (cursor.moveToNext());
-		}
-		if (cursor != null) {
-			cursor.close();
 		}
 		return list;
 	}
