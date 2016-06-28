@@ -13,6 +13,7 @@ import com.rayweather.app.util.HttpUtil;
 
 import com.rayweather.app.util.Utility;
 
+import android.R.bool;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.DownloadManager.Query;
@@ -73,12 +74,29 @@ public class ChooseAreaActivity extends Activity {
 	 * 当前选中级别
 	 */
 	private int currentLevel;
+	
+	/**
+	 * 是否从WeatherActivity中跳出来
+	 */
+	
+	private boolean isFromWeatherActivity;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
+		isFromWeatherActivity = getIntent().getBooleanExtra("from_weather_activity", false);
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		
+		//已经选择了城市且不是从WeatherActivity跳转过来，才会直接跳转到WeatherActivity
+		if(prefs.getBoolean("city_selected", false)&& !isFromWeatherActivity){
+			Intent intent = new Intent(this,WeatherActivity.class);
+			startActivity(intent);
+			finish();
+			return;
+		}
+		
+		
 		if(prefs.getBoolean("city_selecte", false)){
 			Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
 			Log.d("ChooseAreaActivity", "一开始就跳转到WeatherActivity");
@@ -248,6 +266,9 @@ public class ChooseAreaActivity extends Activity {
 		});
 	}
 	
+	
+	
+	
 	/**
 	 * 显示进度对话框
 	 */
@@ -278,6 +299,10 @@ public class ChooseAreaActivity extends Activity {
 		}else if(currentLevel == LEVEL_CITY){
 			queryProvinces();
 		}else {
+			if(isFromWeatherActivity){
+				Intent intent =new Intent(this,WeatherActivity.class);
+				startActivity(intent);
+			}
 			finish();
 		}
 	}
