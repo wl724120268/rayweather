@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class RayWeatherOpenHelper extends SQLiteOpenHelper {
 	
@@ -32,6 +33,7 @@ public class RayWeatherOpenHelper extends SQLiteOpenHelper {
 			+ "county_name text, "
 			+ "county_code text, " 
 			+ "city_id integer)";
+	
 			
 			
 			
@@ -46,6 +48,7 @@ public class RayWeatherOpenHelper extends SQLiteOpenHelper {
 		db.execSQL(CREATE_PROVINCE); //创建Province表
 		db.execSQL(CREATE_CITY); //创建City表
 		db.execSQL(CREATE_COUNTY); //创建County表
+		Log.d("RayWeatherOpenHelper", "建表成功");
 		
 	}
 

@@ -21,6 +21,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -80,7 +81,9 @@ public class ChooseAreaActivity extends Activity {
 		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		if(prefs.getBoolean("city_selecte", false)){
 			Intent intent = new Intent(ChooseAreaActivity.this,WeatherActivity.class);
+			Log.d("ChooseAreaActivity", "一开始就跳转到WeatherActivity");
 			startActivity(intent);
+			
 			finish();
 			return;
 		}
@@ -108,6 +111,8 @@ public class ChooseAreaActivity extends Activity {
 				}else if(currentLevel == LEVEL_COUNTY){
 					String countyCode = countyList.get(index).getCountyCode();	
 					Intent intent = new Intent(ChooseAreaActivity.this, WeatherActivity.class);
+					intent.putExtra("county_code", countyCode);  //重点
+					Log.d("ChooseAreaActivity", "最后跳到WeatherActivity");
 					startActivity(intent);
 					finish();
 				}
@@ -131,8 +136,10 @@ public class ChooseAreaActivity extends Activity {
 			listView.setSelection(0);
 			titleText.setText("中国");
 			currentLevel = LEVEL_PROVINCE;
+			Log.d("ChooseAreaActivity", "从数据库查询Province");
 		} else {
 			queryFromServer(null, "province");
+			Log.d("ChooseAreaActivity", "pro queryFromServer");
 		}
 	}
 
@@ -149,9 +156,11 @@ public class ChooseAreaActivity extends Activity {
 			adapter.notifyDataSetChanged();
 			listView.setSelection(0);
 			titleText.setText(selectedProvince.getProvinceName());
+			Log.d("ChooseAreaActivity", "从数据库查询City");
 			currentLevel = LEVEL_CITY;
 		} else {
 			queryFromServer(selectedProvince.getProvinceCode(), "city");
+			Log.d("ChooseAreaActivity", "city queryFromServer");
 		}
 	}
 
@@ -169,8 +178,10 @@ public class ChooseAreaActivity extends Activity {
 			listView.setSelection(0);
 			titleText.setText(selectedCity.getCityName());
 			currentLevel = LEVEL_COUNTY;
+			Log.d("ChooseAreaActivity", "从数据库查询County");
 		} else {
 			queryFromServer(selectedCity.getCityCode(), "county");
+			Log.d("ChooseAreaActivity", "county queryFromServer");
 		}
 	}
 

@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.LinearLayout;
@@ -63,37 +64,44 @@ public class WeatherActivity extends Activity {
 		temp2Text = (TextView) findViewById(R.id.temp2);
 		currentDateText = (TextView) findViewById(R.id.current_date);
 		String countyCode = getIntent().getStringExtra("county_code");
+		Log.d("WeatherActivity", "开始判断countyCode是否为空");	
+
 		if (!TextUtils.isEmpty(countyCode)) {
 			// 有县级代号时就去查询天气
 			publishText.setText("同步中");
 			weatherInfoLayout.setVisibility(View.INVISIBLE);
 			cityNameText.setVisibility(View.INVISIBLE);
 			queryWeatherCode(countyCode);
+			Log.d("WeatherActivity", "有县级代号 查询网络天气");	
+			
 		} else {
 			// 没有县级代号时就直接显示本地天气
-			showWeather();
-
+			Log.d("WeatherActivity", "没有县级代号 查询本地天气");	
+			showWeather(); 
 		}
 
-	}
+}
+
 
 	/**
 	 * 查询县级代号所对应的天气代号
 	 */
 	private void queryWeatherCode(String countyCode) {
-		String address = "http://www.weather.com.cn/data/list3/city"
-				+ countyCode + ".xml";
+		String address = "http://www.weather.com.cn/data/list3/city" + countyCode + ".xml";
 		queryFromServer(address, "countyCode");
+		Log.d("WeatherActivity", "查询县级代号对应天气代号");	
+
 	}
 
 	/**
 	 * 查询天气代号所对应的天气
 	 */
 	private void queryWeatherInfo(String weatherCode) {
-		String address = "http://www.weather.com.cn/data/cityinfo/"
-				+ weatherCode + ".html";
-
+		String address = "http://www.weather.com.cn/data/cityinfo/" + weatherCode + ".html";
 		queryFromServer(address, "weatherCode");
+		System.out.println(weatherCode+"是WeatherCode");
+		Log.d("WeatherActivity", "查询天气代号对应天气");	
+
 	}
 
 	/**
@@ -112,6 +120,8 @@ public class WeatherActivity extends Activity {
 						if (array != null && array.length == 2) {
 							String weatherCode = array[1];
 							queryWeatherInfo(weatherCode);
+							Log.d("WeatherActivity", "解析服务器返回的天气代号");	
+							
 						}
 					}
 				} else if ("weatherCode".equals(type)) {
@@ -152,6 +162,7 @@ public class WeatherActivity extends Activity {
 		currentDateText.setText(prefs.getString("current_date", ""));
 		weatherInfoLayout.setVisibility(View.VISIBLE);
 		cityNameText.setVisibility(View.VISIBLE);
+		Log.d("WeatherActivity", "读取SharedPreferences文件");	
 		
 		
 	}

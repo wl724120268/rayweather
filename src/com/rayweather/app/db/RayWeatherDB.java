@@ -11,6 +11,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class RayWeatherDB {
 	/**
@@ -41,6 +42,7 @@ public class RayWeatherDB {
 	public synchronized static RayWeatherDB getInstance(Context context) {
 		if (rayWeatherDB == null) {
 			rayWeatherDB = new RayWeatherDB(context);
+			Log.d("RayWeatherDB", "获取RayWeaetherDB实例");
 		}
 
 		return rayWeatherDB;
@@ -55,6 +57,7 @@ public class RayWeatherDB {
 			values.put("province_name", province.getProvinceName());
 			values.put("province_code", province.getProvinceCode());
 			db.insert("Province", null, values);
+			Log.d("RayWeatherDB", "已将Province实例储存到数据库");
 		}
 	}
 
@@ -74,6 +77,7 @@ public class RayWeatherDB {
 				province.setProvinceCode(cursor.getString(cursor
 						.getColumnIndex("province_code")));
 				list.add(province);
+				Log.d("RayWeatherDB", "从数据库读取全国省份信息");
 			} while (cursor.moveToNext());
 		}
 		if (cursor != null) {
@@ -92,6 +96,7 @@ public class RayWeatherDB {
 			values.put("city_code", city.getCityCode());
 			values.put("province_id", city.getProvinceId());
 			db.insert("City", null, values);
+			Log.d("RayWeatherDB", "已将City实例储存到数据库");
 		}
 	}
 
@@ -112,6 +117,7 @@ public class RayWeatherDB {
 						.getColumnIndex("city_code")));
 				city.setProvinceId(provinceId);
 				list.add(city);
+				Log.d("RayWeatherDB", "从数据库读取全国市区信息");
 			} while (cursor.moveToNext());
 		}
 		return list;
@@ -127,6 +133,7 @@ public class RayWeatherDB {
 			values.put("county_code", county.getCountyCode());
 			values.put("city_id", county.getCityID());
 			db.insert("County", null, values);
+			Log.d("RayWeatherDB", "已将County实例储存到数据库");
 		}
 	}
 
@@ -147,6 +154,7 @@ public class RayWeatherDB {
 						.getColumnIndex("county_code")));
 				county.setCityID(cityID);
 				list.add(county);
+				Log.d("RayWeatherDB", "从数据库读取全国县信息");
 			} while (cursor.moveToNext());
 		}
 		if (cursor != null) {
